@@ -15,7 +15,7 @@ export class PokemonListComponent implements OnInit {
   page = 1;
   totalPokemons: number;
 
-  // Filter
+  // Search
   filteredPokemons: any[] = [];
 
   constructor(private dataService: DataService) { }
