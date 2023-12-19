@@ -1,0 +1,31 @@
+<!-- Filtering -->
+<div class="search-box">
+    <input type="text" placeholder="Filter by name" (input)="filterPokemons($event.target.value)" />
+</div>
+
+<!-- Pokemon Grid -->
+<div class="pokemon-grid">
+    <div *ngFor="let pokemon of filteredPokemons | paginate: { itemsPerPage: 10, currentPage: page, totalItems: totalPokemons }; let i = index"
+        class="box" (click)="toggleDetails(pokemon, i)" [class.clicked]="pokemon.showDetails">
+        <div>
+            <img [src]="pokemon.sprites.front_default" alt="Pokemon" [class.large-image]="pokemon.showDetails">
+            <h3><b>{{ pokemon.name }}</b></h3>
+            <p>
+                <b>Type:</b> {{ pokemon.types[0].type.name }}
+            </p>
+        </div>
+        <div *ngIf="pokemon.showDetails">
+            <p>
+                <b>Height:</b> {{ pokemon.height }}
+            </p>
+            <p>
+                <b>HP:</b> {{ pokemon.stats[0].base_stat }}
+            </p>
+            <p>
+                <b>Attack Power:</b> {{ pokemon.stats[1].base_stat }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<pagination-controls (pageChange)="page = $event; pokemons = []; getPokemons();"></pagination-controls>
