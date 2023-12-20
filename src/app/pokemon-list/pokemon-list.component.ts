@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../service/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { IPokemon } from './pokemon';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -11,12 +12,13 @@ import { NgxPaginationModule } from 'ngx-pagination';
   styleUrl: './pokemon-list.component.scss'
 })
 export class PokemonListComponent implements OnInit {
-  pokemons: any[] = [];
+  pokemons: IPokemon[] = [];
   page = 1;
   totalPokemons: number;
+  detailedPokemon: IPokemon = null;
 
   // Search
-  filteredPokemons: any[] = [];
+  filteredPokemons: IPokemon[] = [];
 
   constructor(private dataService: DataService) { }
 
@@ -25,14 +27,16 @@ export class PokemonListComponent implements OnInit {
   }
 
   getPokemons() {
-    this.dataService.getPokemons(10, this.page * 10 - 10)
-      .subscribe((data: any) => {
-        this.totalPokemons = data.count;
-        data.results.forEach(result => {
-          this.dataService.getMoreData(result.name).subscribe((uniqData: any) => {
+    this.dataService.getPokemons(100)
+      .subscribe((pokemonData: any) => {
+        const results: IPokemon[] = pokemonData.results
+        this.totalPokemons = pokemonData.count;
+
+        results.forEach(result => {
+          this.dataService.getMoreData(result.name).subscribe((pokemon: IPokemon) => {
             // Traking if pokemon is clicked (to show all details)
-            uniqData.showDetails = false;
-            this.pokemons.push(uniqData);
+            pokemon.showDetails = false;
+            this.pokemons.push(pokemon);
           });
         });
         this.filteredPokemons = this.pokemons;
@@ -50,8 +54,23 @@ export class PokemonListComponent implements OnInit {
   }
 
   // Details on click
-  toggleDetails(pokemon: any): void {
-    pokemon.showDetails = !pokemon.showDetails;
+  toggleDetails(pokemon: IPokemon): void {
+    if (this.detailedPokemon){
+      this.detailedPokemon.showDetails = false;
+    }
+    if (this.detailedPokemon === pokemon){
+      this.detailedPokemon = null;
+    } else {
+      this.detailedPokemon = pokemon;
+      this.detailedPokemon.showDetails = true;
+    }
+  }
+
+  // Pages function
+  getPagePokemons(): IPokemon[] {
+    const startI = (this.page - 1) * 10;
+    const endI = startI + 10;
+    return this.filteredPokemons.slice(startI, endI);
   }
 
 }

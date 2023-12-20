@@ -5,7 +5,7 @@
 
 <!-- Pokemon Grid -->
 <div class="pokemon-grid">
-    <div *ngFor="let pokemon of filteredPokemons |
+    <div *ngFor="let pokemon of getPagePokemons() |
      paginate: { itemsPerPage: 10, currentPage: page, totalItems: totalPokemons }; let i = index"
         class="box" (click)="toggleDetails(pokemon, i)" [class.clicked]="pokemon.showDetails">
         <div>
