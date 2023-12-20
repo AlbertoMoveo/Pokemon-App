@@ -22,28 +22,27 @@ export class PokemonListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPokemons();
-}
+  }
 
-  getPokemons(){
+  getPokemons() {
     this.dataService.getPokemons(10, this.page * 10 - 10)
-    .subscribe((data: any) => {
-      this.totalPokemons = data.count;
-      data.results.forEach(result => {
-        this.dataService.getMoreData(result.name).subscribe((uniqData: any) => {
-          // Traking if pokemon is clicked (to show all details)
-          uniqData.showDetails = false;
-          this.pokemons.push(uniqData);
-          console.log(this.pokemons);
+      .subscribe((data: any) => {
+        this.totalPokemons = data.count;
+        data.results.forEach(result => {
+          this.dataService.getMoreData(result.name).subscribe((uniqData: any) => {
+            // Traking if pokemon is clicked (to show all details)
+            uniqData.showDetails = false;
+            this.pokemons.push(uniqData);
+          });
         });
-    });
-    this.filteredPokemons = this.pokemons;
-  });
+        this.filteredPokemons = this.pokemons;
+      });
   }
 
   // Filtering function
   filterPokemons(filterText: string) {
-    if (!filterText){
-      this.filteredPokemons = [ ...this.pokemons ];
+    if (!filterText) {
+      this.filteredPokemons = [...this.pokemons];
     } else {
       this.filteredPokemons = this.pokemons.filter(pokemon =>
         pokemon.name.toLowerCase().includes(filterText.toLowerCase()));

@@ -8,13 +8,13 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-// Get Pokemons
-getPokemons(limit: number, offset: number) {
-  return this.http.get(`https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}/`);
-}
+  // Get Pokemons
+  getPokemons(limit: number, offset: number) {
+    return this.http.get(`https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}/`);
+  }
 
-// Get Pokemon Details
-getMoreData(name: string) {
-  return this.http.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
-}
+  // Get Pokemon Details
+  getMoreData(name: string) {
+    return this.http.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
+  }
 }
