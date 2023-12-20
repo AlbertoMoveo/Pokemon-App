@@ -28,28 +28,45 @@ export class PokemonListComponent implements OnInit {
 
   getPokemons() {
     this.dataService.getPokemons(100)
-      .subscribe((pokemonData: any) => {
-        const results: IPokemon[] = pokemonData.results
-        this.totalPokemons = pokemonData.count;
-
-        results.forEach(result => {
-          this.dataService.getMoreData(result.name).subscribe((pokemon: IPokemon) => {
-            // Traking if pokemon is clicked (to show all details)
-            pokemon.showDetails = false;
-            this.pokemons.push(pokemon);
-          });
+    .subscribe((pokemonData: any) => {
+      const results: IPokemon[] = pokemonData.results;
+      this.totalPokemons = pokemonData.count;
+  
+      results.forEach(result => {
+        this.dataService.getMoreData(result.name).subscribe((rawPokemon: any) => {
+          const pokemon: IPokemon = {
+            name: result.name,
+            image: rawPokemon.sprites && rawPokemon.sprites.front_default,
+            type: rawPokemon.types && rawPokemon.types[0]?.type.name,
+            height: rawPokemon.height,
+            health: rawPokemon.stats && rawPokemon.stats[0]?.base_stat,
+            attack: rawPokemon.stats && rawPokemon.stats[1]?.base_stat,
+            showDetails: false
+          };
+          this.pokemons.push(pokemon);
         });
-        this.filteredPokemons = this.pokemons;
       });
+  
+      this.filteredPokemons = this.pokemons;
+    });  
   }
 
-  // Filtering function
-  filterPokemons(filterText: string) {
+  // Filtering functions
+  filterPokemonsByName(filterText: string) {
     if (!filterText) {
       this.filteredPokemons = [...this.pokemons];
     } else {
       this.filteredPokemons = this.pokemons.filter(pokemon =>
         pokemon.name.toLowerCase().includes(filterText.toLowerCase()));
+    }
+  }
+
+  filterPokemonsByType(filterText: string) {
+    if (!filterText) {
+      this.filteredPokemons = [...this.pokemons];
+    } else {
+      this.filteredPokemons = this.pokemons.filter(pokemon =>
+        pokemon.type.toLowerCase().includes(filterText.toLowerCase()));
     }
   }
 
