@@ -16,9 +16,9 @@ export class PokemonListComponent implements OnInit {
   page = 1;
   totalPokemons: number;
   detailedPokemon: IPokemon = null;
-
-  // Search
   filteredPokemons: IPokemon[] = [];
+  totalFilteredPokemons: number;
+  types: string[] = [];
 
   constructor(private dataService: DataService) { }
 
@@ -47,27 +47,44 @@ export class PokemonListComponent implements OnInit {
         });
       });
   
-      this.filteredPokemons = this.pokemons;
+      this.filteredPokemons = [...this.pokemons];
+      this.getTypes();
     });  
   }
 
   // Filtering functions
   filterPokemonsByName(filterText: string) {
-    if (!filterText) {
-      this.filteredPokemons = [...this.pokemons];
-    } else {
+    this.resetFilter();
+    if (filterText) {
       this.filteredPokemons = this.pokemons.filter(pokemon =>
         pokemon.name.toLowerCase().includes(filterText.toLowerCase()));
+      this.totalFilteredPokemons = this.filteredPokemons.length;
     }
   }
 
-  filterPokemonsByType(filterText: string) {
-    if (!filterText) {
-      this.filteredPokemons = [...this.pokemons];
-    } else {
+  filterPokemonsByType(filterType: string) {
+    this.resetFilter();
+    if (filterType) {
       this.filteredPokemons = this.pokemons.filter(pokemon =>
-        pokemon.type.toLowerCase().includes(filterText.toLowerCase()));
+        pokemon.type === filterType);
+      this.totalFilteredPokemons = this.filteredPokemons.length;
     }
+  }
+
+  resetFilter(): void {
+    this.page = 1;
+    this.filteredPokemons = [...this.pokemons];
+    this.totalFilteredPokemons = this.totalPokemons;
+    this.getPagePokemons();
+  }
+
+  getTypes(): void {
+    this.pokemons.forEach(pokemon => {
+      const type = pokemon.type;
+      if (!this.types.includes(type)){
+        this.types.push(type)
+      }
+    })
   }
 
   // Details on click

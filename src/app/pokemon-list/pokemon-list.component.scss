@@ -37,12 +37,29 @@
   }
 }
 
-pagination-controls {
-  text-align: center;
-}
-
-.search-box {
+.filter-box {
   margin-top: 10;
   margin-bottom: 15px;
+  text-align: center;
+  font-size: 18px;
+  padding: 8px;
+  border: 1px solid #ccc;
+
+  select {
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  label {
+    margin-right: 10px;
+  }
+}
+
+pagination-controls {
   text-align: center;
 }
