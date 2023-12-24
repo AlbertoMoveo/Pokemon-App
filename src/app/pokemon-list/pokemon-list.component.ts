@@ -16,7 +16,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 export class PokemonListComponent implements OnInit {
   pokemons: IPokemon[] = [];
   page = 1;
-  totalPokemons: number;
+  totalPokemons: number = 200;
   detailedPokemon: IPokemon = null;
   filteredPokemons: IPokemon[] = [];
   totalFilteredPokemons: number;
@@ -30,10 +30,9 @@ export class PokemonListComponent implements OnInit {
   }
 
   getPokemons() {
-    this.dataService.getPokemonsAxios(200)
+    this.dataService.getPokemonsAxios(this.totalPokemons)
       .then(async (pokemonData: AxiosResponse<any, any>) => {
         const results: IPokemon[] = pokemonData.data.results;
-        this.totalPokemons = pokemonData.data.count;
         for (const result of results) {
           const rawPokemonResponse = await this.dataService.getMoreDataAxios(result.name);
           const rawPokemon = rawPokemonResponse.data;
