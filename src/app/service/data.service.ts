@@ -17,5 +17,11 @@ export class DataService {
   getMoreData(name: string) {
     return this.http.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
   }
+
+  testFunction() {
+    const a = 3;
+    const b = 4;
+    return a+b;
+  }
 }
  
