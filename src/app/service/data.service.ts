@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import axios from 'axios';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +9,11 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  // Get Pokemons
-  getPokemons(limit: number) {
-    return this.http.get(`https://pokeapi.co/api/v2/pokemon/?limit=${limit}/`);
+  getPokemonsAxios(limit: number) {
+    return axios.get(`https://pokeapi.co/api/v2/pokemon/?limit=${limit}/`)
   }
 
-  // Get Pokemon Details
-  getMoreData(name: string) {
-    return this.http.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
+  getMoreDataAxios(name: string) {
+    return axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
   }
-}
- 
+  }

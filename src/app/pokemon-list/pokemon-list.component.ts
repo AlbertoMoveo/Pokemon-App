@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DataService } from '../service/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { IPokemon } from './pokemon';
+import { AxiosResponse } from 'axios';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -27,13 +28,13 @@ export class PokemonListComponent implements OnInit {
   }
 
   getPokemons() {
-    this.dataService.getPokemons(100)
-    .subscribe((pokemonData: any) => {
-      const results: IPokemon[] = pokemonData.results;
-      this.totalPokemons = pokemonData.count;
-  
-      results.forEach(result => {
-        this.dataService.getMoreData(result.name).subscribe((rawPokemon: any) => {
+    this.dataService.getPokemonsAxios(100)
+      .then(async (pokemonData: AxiosResponse<any, any>) => {
+        const results: IPokemon[] = pokemonData.data.results;
+        this.totalPokemons = pokemonData.data.count;
+        for (const result of results) {
+          const rawPokemonResponse = await this.dataService.getMoreDataAxios(result.name);
+          const rawPokemon = rawPokemonResponse.data;
           const pokemon: IPokemon = {
             name: result.name,
             image: rawPokemon.sprites && rawPokemon.sprites.front_default,
@@ -44,12 +45,11 @@ export class PokemonListComponent implements OnInit {
             showDetails: false
           };
           this.pokemons.push(pokemon);
-        });
+        }
+        this.filteredPokemons = [...this.pokemons];
+        this.getTypes();
+        this.resetFilter();
       });
-  
-      this.filteredPokemons = [...this.pokemons];
-      this.getTypes();
-    });  
   }
 
   // Filtering functions
@@ -81,7 +81,7 @@ export class PokemonListComponent implements OnInit {
   getTypes(): void {
     this.pokemons.forEach(pokemon => {
       const type = pokemon.type;
-      if (!this.types.includes(type)){
+      if (!this.types.includes(type)) {
         this.types.push(type)
       }
     })
@@ -89,10 +89,10 @@ export class PokemonListComponent implements OnInit {
 
   // Details on click
   toggleDetails(pokemon: IPokemon): void {
-    if (this.detailedPokemon){
+    if (this.detailedPokemon) {
       this.detailedPokemon.showDetails = false;
     }
-    if (this.detailedPokemon === pokemon){
+    if (this.detailedPokemon === pokemon) {
       this.detailedPokemon = null;
     } else {
       this.detailedPokemon = pokemon;
@@ -106,7 +106,5 @@ export class PokemonListComponent implements OnInit {
     const endI = startI + 10;
     return this.filteredPokemons.slice(startI, endI);
   }
-
-  // Comment on try1 - fix
 
 }
