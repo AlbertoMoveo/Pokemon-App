@@ -109,6 +109,4 @@ export class PokemonListComponent implements OnInit {
     return this.filteredPokemons.slice(startI, endI);
   }
 
-
-  // Comment for branch
 }
