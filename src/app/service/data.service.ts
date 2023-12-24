@@ -21,6 +21,7 @@ export class DataService {
   testFunction() {
     const a = 3;
     const b = 4;
+    console.log("TRY");
     return a+b;
   }
 }
