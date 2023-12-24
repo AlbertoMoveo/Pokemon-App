@@ -26,8 +26,6 @@ export class PokemonListComponent implements OnInit {
     this.getPokemons();
   }
 
-  // Comment
-
   getPokemons() {
     this.dataService.getPokemons(100)
     .subscribe((pokemonData: any) => {
