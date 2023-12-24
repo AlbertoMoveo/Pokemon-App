@@ -22,6 +22,7 @@ export class DataService {
     const a = 3;
     const b = 4;
     const c = 5;
+    console.log("TRY");
     return a+b+c;
   }
 }
