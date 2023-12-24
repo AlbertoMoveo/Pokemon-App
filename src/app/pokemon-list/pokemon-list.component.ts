@@ -4,11 +4,12 @@ import { DataService } from '../service/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { IPokemon } from './pokemon';
 import { AxiosResponse } from 'axios';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-pokemon-list',
   standalone: true,
-  imports: [CommonModule, NgxPaginationModule],
+  imports: [CommonModule, NgxPaginationModule, MatProgressSpinnerModule],
   templateUrl: './pokemon-list.component.html',
   styleUrl: './pokemon-list.component.scss'
 })
@@ -20,6 +21,7 @@ export class PokemonListComponent implements OnInit {
   filteredPokemons: IPokemon[] = [];
   totalFilteredPokemons: number;
   types: string[] = [];
+  isLoading: boolean = true;
 
   constructor(private dataService: DataService) { }
 
@@ -28,7 +30,7 @@ export class PokemonListComponent implements OnInit {
   }
 
   getPokemons() {
-    this.dataService.getPokemonsAxios(100)
+    this.dataService.getPokemonsAxios(200)
       .then(async (pokemonData: AxiosResponse<any, any>) => {
         const results: IPokemon[] = pokemonData.data.results;
         this.totalPokemons = pokemonData.data.count;
@@ -49,6 +51,7 @@ export class PokemonListComponent implements OnInit {
         this.filteredPokemons = [...this.pokemons];
         this.getTypes();
         this.resetFilter();
+        this.isLoading = false;
       });
   }
 

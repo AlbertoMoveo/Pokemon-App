@@ -8,6 +8,9 @@
     </select>
 </div>
 
+<!-- Spinner -->
+<mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
+
 <!-- Pokemon Grid -->
 <div class="pokemon-grid">
     <div *ngFor="let pokemon of getPagePokemons() |
@@ -34,4 +37,5 @@
     </div>
 </div>
 
-<pagination-controls (pageChange)="page = $event; pokemons = [];"></pagination-controls>
+<!-- Pagination -->
+<pagination-controls *ngIf="!isLoading" (pageChange)="page = $event; pokemons = [];"></pagination-controls>
