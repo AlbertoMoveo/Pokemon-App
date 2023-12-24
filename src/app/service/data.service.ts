@@ -21,7 +21,8 @@ export class DataService {
   testFunction() {
     const a = 3;
     const b = 4;
-    return a+b;
+    const c = 5;
+    return a+b+c;
   }
 }
  
