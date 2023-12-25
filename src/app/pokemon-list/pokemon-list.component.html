@@ -2,7 +2,7 @@
 <div class="filter-box">
     <input type="text" placeholder="Search by name" (input)="filterPokemonsByName($event.target.value)" />
     <label for="Types"></label>
-    <select name="pokemon-types" id="pokemon-types" (input)="filterPokemonsByType($event.target.value)">
+    <select name="pokemon-types" id="pokemon-types" (change)="filterPokemonsByType($event.target.value)">
         <option value="" selected>Select a type</option>
         <option *ngFor="let type of types" [value]="type">{{ type }}</option>
     </select>
@@ -12,9 +12,9 @@
 <mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
 
 <!-- Pokemon Grid -->
-<div class="pokemon-grid">
+<div class="pokemon-grid" *ngIf="!isLoading">
     <div *ngFor="let pokemon of getPagePokemons() |
-     paginate: { itemsPerPage: 10, currentPage: page, totalItems: totalFilteredPokemons }; let i = index" class="box"
+     paginate: { itemsPerPage: 10, currentPage: page, totalItems: totalPokemons }; let i = index" class="box"
         (click)="toggleDetails(pokemon, i)" [class.clicked]="pokemon.showDetails">
         <div>
             <img [src]="pokemon.image" alt="Pokemon" [class.large-image]="pokemon.showDetails">
@@ -38,4 +38,4 @@
 </div>
 
 <!-- Pagination -->
-<pagination-controls *ngIf="!isLoading" (pageChange)="page = $event; pokemons = [];"></pagination-controls>
+<pagination-controls *ngIf="!isLoading" (pageChange)="page = $event;"></pagination-controls>

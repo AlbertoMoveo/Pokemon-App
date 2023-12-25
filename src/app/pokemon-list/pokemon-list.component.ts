@@ -4,7 +4,7 @@ import { DataService } from '../service/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { IPokemon } from './pokemon';
 import { AxiosResponse } from 'axios';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -16,77 +16,91 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 export class PokemonListComponent implements OnInit {
   pokemons: IPokemon[] = [];
   page = 1;
-  totalPokemons: number = 200;
+  totalPokemons: number = 100;
   detailedPokemon: IPokemon = null;
-  filteredPokemons: IPokemon[] = [];
-  totalFilteredPokemons: number;
   types: string[] = [];
+  type: string = null;
   isLoading: boolean = true;
 
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.getPokemons();
+    this.getTypes();
+    this.getPokemonsByType();
   }
 
+  getTypes() {
+    this.dataService.getAllTypesAxios().then(async (typesData) => {
+      for (const type of typesData.data['results']) {
+        this.types.push(type.name);
+      }
+    });
+  }
+
+  async getMoreData(pokemonName: string): Promise<IPokemon> {
+    const rawPokemonResponse = await this.dataService.getMoreDataAxios(pokemonName);
+    const rawPokemon = rawPokemonResponse.data;
+    return {
+      name: pokemonName,
+      image: rawPokemon.sprites && rawPokemon.sprites.front_default,
+      type: rawPokemon.types && rawPokemon.types[0]?.type.name,
+      height: rawPokemon.height,
+      health: rawPokemon.stats && rawPokemon.stats[0]?.base_stat,
+      attack: rawPokemon.stats && rawPokemon.stats[1]?.base_stat,
+      showDetails: false
+    };
+  }
+  
+  async getPokemonsByType() {
+    this.clearPokemons();
+    this.isLoading = true;
+    if (!this.type) {
+      return this.getPokemons();
+    }
+    const pokemonData: AxiosResponse<any, any> = await this.dataService.getPokemonsByType(this.type, this.totalPokemons);
+    const results: any[] = pokemonData.data.pokemon;
+    for (const result of results) {
+      const pokemon = await this.getMoreData(result.pokemon.name);
+      this.pokemons.push(pokemon);
+    }
+    this.totalPokemons = this.pokemons.length;
+    this.resetFilter();
+    this.isLoading = false;
+  }
+  
   getPokemons() {
     this.dataService.getPokemonsAxios(this.totalPokemons)
       .then(async (pokemonData: AxiosResponse<any, any>) => {
         const results: IPokemon[] = pokemonData.data.results;
         for (const result of results) {
-          const rawPokemonResponse = await this.dataService.getMoreDataAxios(result.name);
-          const rawPokemon = rawPokemonResponse.data;
-          const pokemon: IPokemon = {
-            name: result.name,
-            image: rawPokemon.sprites && rawPokemon.sprites.front_default,
-            type: rawPokemon.types && rawPokemon.types[0]?.type.name,
-            height: rawPokemon.height,
-            health: rawPokemon.stats && rawPokemon.stats[0]?.base_stat,
-            attack: rawPokemon.stats && rawPokemon.stats[1]?.base_stat,
-            showDetails: false
-          };
+          const pokemon = await this.getMoreData(result.name);
           this.pokemons.push(pokemon);
         }
-        this.filteredPokemons = [...this.pokemons];
-        this.getTypes();
         this.resetFilter();
         this.isLoading = false;
       });
-  }
+  }  
 
   // Filtering functions
   filterPokemonsByName(filterText: string) {
     this.resetFilter();
     if (filterText) {
-      this.filteredPokemons = this.pokemons.filter(pokemon =>
+      this.pokemons = this.pokemons.filter(pokemon =>
         pokemon.name.toLowerCase().includes(filterText.toLowerCase()));
-      this.totalFilteredPokemons = this.filteredPokemons.length;
+      this.totalPokemons = this.pokemons.length;
     }
   }
 
   filterPokemonsByType(filterType: string) {
-    this.resetFilter();
     if (filterType) {
-      this.filteredPokemons = this.pokemons.filter(pokemon =>
-        pokemon.type === filterType);
-      this.totalFilteredPokemons = this.filteredPokemons.length;
+      this.type = filterType;
+      this.getPokemonsByType();
     }
   }
 
   resetFilter(): void {
     this.page = 1;
-    this.filteredPokemons = [...this.pokemons];
-    this.totalFilteredPokemons = this.totalPokemons;
     this.getPagePokemons();
-  }
-
-  getTypes(): void {
-    this.pokemons.forEach(pokemon => {
-      const type = pokemon.type;
-      if (!this.types.includes(type)) {
-        this.types.push(type)
-      }
-    })
   }
 
   // Details on click
@@ -106,7 +120,11 @@ export class PokemonListComponent implements OnInit {
   getPagePokemons(): IPokemon[] {
     const startI = (this.page - 1) * 10;
     const endI = startI + 10;
-    return this.filteredPokemons.slice(startI, endI);
+    return this.pokemons.slice(startI, endI);
+  }
+
+  clearPokemons(){
+    this.pokemons = [];
   }
 
 }

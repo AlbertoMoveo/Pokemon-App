@@ -13,7 +13,16 @@ export class DataService {
     return axios.get(`https://pokeapi.co/api/v2/pokemon/?limit=${limit}/`)
   }
 
+  getAllTypesAxios() {
+    return axios.get("https://pokeapi.co/api/v2/type/");
+  }
+
+  getPokemonsByType(type: string, limit: number) {
+    return axios.get(`https://pokeapi.co/api/v2/type/${type}/?limit=${limit}`);
+  }
+
   getMoreDataAxios(name: string) {
     return axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
   }
-  }
+
+}
