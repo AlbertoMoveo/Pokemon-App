@@ -36,6 +36,20 @@ export class PokemonListComponent implements OnInit {
       }
     });
   }
+
+  async getMoreData(pokemonName: string): Promise<IPokemon> {
+    const rawPokemonResponse = await this.dataService.getMoreDataAxios(pokemonName);
+    const rawPokemon = rawPokemonResponse.data;
+    return {
+      name: pokemonName,
+      image: rawPokemon.sprites && rawPokemon.sprites.front_default,
+      type: rawPokemon.types && rawPokemon.types[0]?.type.name,
+      height: rawPokemon.height,
+      health: rawPokemon.stats && rawPokemon.stats[0]?.base_stat,
+      attack: rawPokemon.stats && rawPokemon.stats[1]?.base_stat,
+      showDetails: false
+    };
+  }
   
   async getPokemonsByType() {
     this.clearPokemons();
@@ -65,21 +79,7 @@ export class PokemonListComponent implements OnInit {
         this.resetFilter();
         this.isLoading = false;
       });
-  }
-
-    async getMoreData(pokemonName: string): Promise<IPokemon> {
-    const rawPokemonResponse = await this.dataService.getMoreDataAxios(pokemonName);
-    const rawPokemon = rawPokemonResponse.data;
-    return {
-      name: pokemonName,
-      image: rawPokemon.sprites && rawPokemon.sprites.front_default,
-      type: rawPokemon.types && rawPokemon.types[0]?.type.name,
-      height: rawPokemon.height,
-      health: rawPokemon.stats && rawPokemon.stats[0]?.base_stat,
-      attack: rawPokemon.stats && rawPokemon.stats[1]?.base_stat,
-      showDetails: false
-    };
-  }
+  }  
 
   // Filtering functions
   filterPokemonsByName(filterText: string) {
