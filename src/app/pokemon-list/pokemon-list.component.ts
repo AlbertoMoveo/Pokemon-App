@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataService } from '../service/data.service';
+import { DataService } from '../services/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { IPokemon } from './pokemon';
 import { AxiosResponse } from 'axios';
