@@ -92,6 +92,8 @@ export class PokemonListComponent implements OnInit {
       this.pokemons = this.pokemons.filter(pokemon =>
         pokemon.name.toLowerCase().includes(filterText.toLowerCase()));
       this.totalPokemons = this.pokemons.length;
+    } else {
+      this.getPokemons();
     }
   }
 
@@ -99,6 +101,9 @@ export class PokemonListComponent implements OnInit {
     const index = this.recentSearches.indexOf(searchText);
     if (index !== -1) {
       this.recentSearches.splice(index, 1);
+    }
+    if(this.recentSearches.length >= 5) {
+      this.recentSearches.pop();
     }
     this.recentSearches.unshift(searchText);
     localStorage.setItem('recentSearches', JSON.stringify(this.recentSearches));
@@ -118,7 +123,14 @@ export class PokemonListComponent implements OnInit {
     if (filterType) {
       this.type = filterType;
       this.getPokemonsByType();
+    } else {
+      this.getPokemons();
     }
+  }
+
+  resetSearch(): void {
+    this.recentSearches = [];
+    localStorage.removeItem('recentSearches');
   }
 
   resetFilters(): void {
@@ -127,8 +139,6 @@ export class PokemonListComponent implements OnInit {
     this.filterType = '';
     this.page = 1;
     this.type = null;
-    this.recentSearches = [];
-    localStorage.removeItem('recentSearches');
     this.getPokemons();
   }
 

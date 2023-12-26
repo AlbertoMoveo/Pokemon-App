@@ -12,7 +12,8 @@
         <div *ngFor="let search of recentSearches" (click)="searchRecent(search)">
           {{ search }}
         </div>
-      </div>
+    </div>
+    <button class="reset-button" *ngIf="recentSearches.length > 0" (click)="resetSearch()">Clear search history</button>
 </div>
 
 <!-- Spinner -->
