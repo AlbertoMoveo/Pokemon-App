@@ -1,0 +1,12 @@
+<nav class="navbar">
+  <div class="navbar-logo" (click)="navigateToHome()">
+    <img src="assets/logo.png" alt="My App Logo" />
+  </div>
+  <h1>Pokemon App</h1>
+  <div class="navbar-actions">
+    <button *ngIf="loggedIn; else loginButton" (click)="logout()">Logout</button>
+    <ng-template #loginButton>
+      <button (click)="login()">Log In</button>
+    </ng-template>
+  </div>  
+</nav>

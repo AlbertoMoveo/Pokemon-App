@@ -1,12 +1,18 @@
 <!-- Filtering -->
 <div class="filter-box">
-    <div class="home-button" (click)="goHome()">Home</div>
-    <input type="text" placeholder="Search by name" (input)="filterPokemonsByName($event.target.value)" [(ngModel)]="filterText" />
+    <input type="text" placeholder="Search by name" [(ngModel)]="filterText" (keyup.enter)="filterPokemonsByName(filterText)" />
+    <button class="search-button" (click)="filterPokemonsByName(filterText)">Search</button>
     <label for="Types"></label>
     <select name="pokemon-types" id="pokemon-types" (change)="filterPokemonsByType($event.target.value)" [(ngModel)]="filterType">
         <option value="" selected>Select a type</option>
         <option *ngFor="let type of types" [value]="type">{{ type }}</option>
     </select>
+    <div class="reset-button" (click)="resetFilters()">Reset Filters</div>
+    <div class="recent-searches">
+        <div *ngFor="let search of recentSearches" (click)="searchRecent(search)">
+          {{ search }}
+        </div>
+      </div>
 </div>
 
 <!-- Spinner -->

@@ -38,12 +38,11 @@
 }
 
 .filter-box {
-  margin-top: 10;
+  background-color: seagreen;
   margin-bottom: 15px;
   text-align: center;
   font-size: 18px;
   padding: 8px;
-  border: 1px solid #ccc;
 
   select {
     border-radius: 4px;
@@ -59,19 +58,52 @@
     margin-right: 10px;
   }
 
-  .home-button {
+  .reset-button {
     cursor: pointer;
     display: inline-block;
-    padding: 10px;
-    background-color: seagreen;
+    padding: 4px;
+    background-color: gray;
     color: #fff;
     border: none;
     border-radius: 3px;
     margin-bottom: 10px;
-    margin-right: 10px;
+    margin-left: 13px;
     font-size: 15px;
     text-align: center;
     transition: background-color 0.3s ease-in-out;
+  }
+
+  .search-button {
+    cursor: pointer;
+    display: inline-block;
+    padding: 4px;
+    background-color: rgb(62, 113, 84);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    margin-left: 1px;
+    font-size: 15px;
+    text-align: center;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .recent-searches {
+    div {
+      display: inline-block;
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 5px;
+      margin-bottom: 8px;
+      background-color: #e0e0e0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+
+      &:hover {
+        background-color: #d0d0d0;
+      }
+    }
   }
 }
 
@@ -80,7 +112,7 @@ pagination-controls {
 }
 
 mat-progress-spinner {
-  position: fixed;
+  position: dynamic;
   top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);

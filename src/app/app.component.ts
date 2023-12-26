@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { HeaderComponent } from "./header/header.component";
-import { PokemonListComponent } from "./pokemon-list/pokemon-list.component";
+import { HeaderComponent } from "./components/header/header.component";
+import { PokemonListComponent } from "./components/pokemon-list/pokemon-list.component";
 import { AuthComponent } from './auth/auth.component';
 import { AuthService } from './services/auth.service';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 
 @Component({
@@ -14,7 +15,7 @@ import { AuthService } from './services/auth.service';
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
-    imports: [CommonModule, HeaderComponent, PokemonListComponent, AuthComponent, RouterOutlet, FormsModule],
+    imports: [CommonModule, HeaderComponent, PokemonListComponent, AuthComponent, RouterOutlet, FormsModule, NavbarComponent],
     providers: [AuthService]
 })
 export class AppComponent {

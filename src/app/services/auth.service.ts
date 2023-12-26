@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -7,25 +8,27 @@ export class AuthService {
   private readonly loggedInKey = 'loggedInKey';
   private readonly expectedValue = 'c3VwZXJfc2VjcmV0X2tleQ==';
 
-  errorMessage: string = ''
+  errorMessage: string = '';
 
   get loggedIn(): boolean {
     const storedValue = localStorage.getItem(this.loggedInKey);
     return !!storedValue && storedValue === this.expectedValue;
   }
 
+  constructor(private router: Router) {}
+
   login(email: string): void {
     if (email === 'demo@skills.co.il') {
       this.errorMessage = '';
-      return localStorage.setItem(this.loggedInKey, this.expectedValue);
+      localStorage.setItem(this.loggedInKey, this.expectedValue);
+      this.router.navigate(['/pokemons']);
+    } else {
+      this.errorMessage = 'Invalid email. Please try again.';
     }
-    this.errorMessage = 'Invalid email. Please try again.'
   }
 
   logout(): void {
     localStorage.removeItem(this.loggedInKey);
+    this.router.navigate(['/login']);
   }
-
-  constructor() {}
 }
-

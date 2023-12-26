@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DataService } from '../services/data.service';
+import { DataService } from '../../services/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { IPokemon } from './pokemon';
 import { AxiosResponse } from 'axios';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -23,13 +24,15 @@ export class PokemonListComponent implements OnInit {
   type: string = null;
   isLoading: boolean = true;
   filterText: string = '';
+  recentSearches: string[] = [];
   filterType: string = '';
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.getTypes();
     this.getPokemonsByType();
+    this.loadRecentSearches();
   }
 
   getTypes() {
@@ -62,12 +65,11 @@ export class PokemonListComponent implements OnInit {
     }
     const pokemonData: AxiosResponse<any, any> = await this.dataService.getPokemonsByType(this.type, this.totalPokemons);
     const results: any[] = pokemonData.data.pokemon;
-    for (const result of results) {
-      const pokemon = await this.getMoreData(result.pokemon.name);
-      this.pokemons.push(pokemon);
-    }
+    const promises = results.map(result=>this.getMoreData(result.pokemon.name));
+    const arr = await Promise.all(promises);
+    this.pokemons.push(...arr);
     this.totalPokemons = this.pokemons.length;
-    this.resetFilter();
+    this.resetPages();
     this.isLoading = false;
   }
   
@@ -75,24 +77,42 @@ export class PokemonListComponent implements OnInit {
     this.dataService.getPokemonsAxios(this.totalPokemons)
       .then(async (pokemonData: AxiosResponse<any, any>) => {
         const results: IPokemon[] = pokemonData.data.results;
-        for (const result of results) {
-          const pokemon = await this.getMoreData(result.name);
-          this.pokemons.push(pokemon);
-        }
-        this.resetFilter();
+        const promises = results.map(result=>this.getMoreData(result.name));
+        const arr = await Promise.all(promises);
+        this.pokemons.push(...arr);
+        this.resetPages();
         this.isLoading = false;
       });
   }  
 
-  // Filtering functions
   filterPokemonsByName(filterText: string) {
-    this.resetFilter();
+    this.resetPages();
     if (filterText) {
+      this.addToRecentSearches(filterText);
       this.pokemons = this.pokemons.filter(pokemon =>
         pokemon.name.toLowerCase().includes(filterText.toLowerCase()));
       this.totalPokemons = this.pokemons.length;
     }
   }
+
+  addToRecentSearches(searchText: string) {
+    const index = this.recentSearches.indexOf(searchText);
+    if (index !== -1) {
+      this.recentSearches.splice(index, 1);
+    }
+    this.recentSearches.unshift(searchText);
+    localStorage.setItem('recentSearches', JSON.stringify(this.recentSearches));
+  }
+
+  loadRecentSearches() {
+    const recentSearches = localStorage.getItem('recentSearches');
+    this.recentSearches = recentSearches ? JSON.parse(recentSearches) : [];
+  }
+
+  searchRecent(searchText: string) {
+    this.filterText = searchText;
+    this.filterPokemonsByName(searchText);
+  }  
 
   filterPokemonsByType(filterType: string) {
     if (filterType) {
@@ -101,21 +121,22 @@ export class PokemonListComponent implements OnInit {
     }
   }
 
-  goHome(): void {
+  resetFilters(): void {
     this.clearPokemons();
     this.filterText = '';
     this.filterType = '';
     this.page = 1;
     this.type = null;
-    this.getPokemonsByType();
+    this.recentSearches = [];
+    localStorage.removeItem('recentSearches');
+    this.getPokemons();
   }
 
-  resetFilter(): void {
+  resetPages(): void {
     this.page = 1;
     this.getPagePokemons();
   }
 
-  // Details on click
   toggleDetails(pokemon: IPokemon): void {
     if (this.detailedPokemon) {
       this.detailedPokemon.showDetails = false;
@@ -128,7 +149,6 @@ export class PokemonListComponent implements OnInit {
     }
   }
 
-  // Pages function
   getPagePokemons(): IPokemon[] {
     const startI = (this.page - 1) * 10;
     const endI = startI + 10;
