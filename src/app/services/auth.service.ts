@@ -1,24 +1,31 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly loggedInKey = 'loggedInKey';
+  private readonly expectedValue = 'c3VwZXJfc2VjcmV0X2tleQ==';
+
+  errorMessage: string = ''
 
   get loggedIn(): boolean {
-    return !!localStorage.getItem(this.loggedInKey);
+    const storedValue = localStorage.getItem(this.loggedInKey);
+    return !!storedValue && storedValue === this.expectedValue;
   }
 
   login(email: string): void {
-    if (email === 'example@example.com') {
-      localStorage.setItem(this.loggedInKey, 'SecretKey');
+    if (email === 'demo@skills.co.il') {
+      this.errorMessage = '';
+      return localStorage.setItem(this.loggedInKey, this.expectedValue);
     }
+    this.errorMessage = 'Invalid email. Please try again.'
   }
 
   logout(): void {
     localStorage.removeItem(this.loggedInKey);
   }
 
-  constructor() { }
+  constructor() {}
 }
+

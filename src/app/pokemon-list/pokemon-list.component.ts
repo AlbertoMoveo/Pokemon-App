@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DataService } from '../services/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { IPokemon } from './pokemon';
@@ -9,7 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-pokemon-list',
   standalone: true,
-  imports: [CommonModule, NgxPaginationModule, MatProgressSpinnerModule],
+  imports: [CommonModule, NgxPaginationModule, MatProgressSpinnerModule, FormsModule],
   templateUrl: './pokemon-list.component.html',
   styleUrl: './pokemon-list.component.scss'
 })
@@ -21,6 +22,8 @@ export class PokemonListComponent implements OnInit {
   types: string[] = [];
   type: string = null;
   isLoading: boolean = true;
+  filterText: string = '';
+  filterType: string = '';
 
   constructor(private dataService: DataService) { }
 
@@ -96,6 +99,15 @@ export class PokemonListComponent implements OnInit {
       this.type = filterType;
       this.getPokemonsByType();
     }
+  }
+
+  goHome(): void {
+    this.clearPokemons();
+    this.filterText = '';
+    this.filterType = '';
+    this.page = 1;
+    this.type = null;
+    this.getPokemonsByType();
   }
 
   resetFilter(): void {

@@ -1,8 +1,9 @@
 <!-- Filtering -->
 <div class="filter-box">
-    <input type="text" placeholder="Search by name" (input)="filterPokemonsByName($event.target.value)" />
+    <div class="home-button" (click)="goHome()">Home</div>
+    <input type="text" placeholder="Search by name" (input)="filterPokemonsByName($event.target.value)" [(ngModel)]="filterText" />
     <label for="Types"></label>
-    <select name="pokemon-types" id="pokemon-types" (change)="filterPokemonsByType($event.target.value)">
+    <select name="pokemon-types" id="pokemon-types" (change)="filterPokemonsByType($event.target.value)" [(ngModel)]="filterType">
         <option value="" selected>Select a type</option>
         <option *ngFor="let type of types" [value]="type">{{ type }}</option>
     </select>

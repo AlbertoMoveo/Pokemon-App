@@ -58,6 +58,21 @@
   label {
     margin-right: 10px;
   }
+
+  .home-button {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px;
+    background-color: seagreen;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    font-size: 15px;
+    text-align: center;
+    transition: background-color 0.3s ease-in-out;
+  }
 }
 
 pagination-controls {
