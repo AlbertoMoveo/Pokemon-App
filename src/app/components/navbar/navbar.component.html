@@ -4,6 +4,7 @@
   </div>
   <h1>Pokemon App</h1>
   <div class="navbar-actions">
+    <button (click)="navigateToMap()">Go to Map</button>
     <button *ngIf="loggedIn; else loginButton" (click)="logout()">Logout</button>
     <ng-template #loginButton>
       <button (click)="login()">Log In</button>

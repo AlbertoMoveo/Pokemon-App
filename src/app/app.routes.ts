@@ -1,7 +1,7 @@
 import { Router, Routes } from "@angular/router";
 import { AuthComponent } from "./auth/auth.component";
 import { PokemonListComponent } from "./components/pokemon-list/pokemon-list.component";
-import { authGuard } from "./auth.guard";
+import { authGuard } from "./guards/auth.guard";
 import { MapComponent } from "./components/map/map.component";
 
 export const routes: Routes = [

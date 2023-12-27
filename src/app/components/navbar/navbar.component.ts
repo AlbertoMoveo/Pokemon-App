@@ -29,4 +29,12 @@ export class NavbarComponent {
     this.location.go('/pokemons');
     window.location.reload();
   }
+
+  navigateToMap() {
+    this.router.navigate(['/map']);
+    this.location.replaceState('/map');
+    this.location.go('/map');
+    window.location.reload();
+  }
+  
 }
