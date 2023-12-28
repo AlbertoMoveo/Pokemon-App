@@ -11,11 +11,13 @@ export class AuthService {
   errorMessage: string = '';
 
   get loggedIn(): boolean {
-    const storedValue = localStorage.getItem(this.loggedInKey);
-    return !!storedValue && storedValue === this.expectedValue;
+    if (typeof window !== 'undefined') {
+      const storedValue = localStorage.getItem(this.loggedInKey);
+      return !!storedValue && storedValue === this.expectedValue;
+    }
   }
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   login(email: string): void {
     if (email === 'demo@skills.co.il') {
@@ -28,7 +30,9 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.loggedInKey);
-    this.router.navigate(['/login']);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(this.loggedInKey);
+      this.router.navigate(['/login']);
+    }
   }
 }

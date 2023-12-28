@@ -2,6 +2,8 @@
   <body>
     <div id="map-container">
       <input #autocompleteInput id="autocomplete" placeholder="Enter a place" />
+      <button (click)="startDirections()">Start Directions</button>
+      <button (click)="clearDirections()">Clear Directions</button>
         <div id="map"></div>
       </div>      
   </body>

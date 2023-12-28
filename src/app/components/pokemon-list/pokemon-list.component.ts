@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DataService } from '../../services/data.service';
+import { DataService } from '../../services/data/data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { IPokemon } from './pokemon';
+import { IPokemon, IPokemonByTypeResponse, IPokemonThin, IName } from '../../interfaces/pokemon';
 import { AxiosResponse } from 'axios';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -35,7 +35,7 @@ export class PokemonListComponent implements OnInit {
     this.loadRecentSearches();
   }
 
-  getTypes() {
+  getTypes(): void {
     this.dataService.getAllTypesAxios().then(async (typesData) => {
       for (const type of typesData.data['results']) {
         this.types.push(type.name);
@@ -63,10 +63,10 @@ export class PokemonListComponent implements OnInit {
     if (!this.type) {
       return this.getPokemons();
     }
-    const pokemonData: AxiosResponse<any, any> = await this.dataService.getPokemonsByType(this.type, this.totalPokemons);
-    const results: any[] = pokemonData.data.pokemon;
-    const promises = results.map(result=>this.getMoreData(result.pokemon.name));
-    const arr = await Promise.all(promises);
+    const rawPokemonData: AxiosResponse<IPokemonByTypeResponse> = await this.dataService.getPokemonsByType(this.type, this.totalPokemons);
+    const results: IPokemonThin[] = rawPokemonData.data.pokemon;
+    const promises: Promise<IPokemon>[] = results.map(result=>this.getMoreData(result.pokemon.name));
+    const arr: IPokemon[] = await Promise.all(promises);
     this.pokemons.push(...arr);
     this.totalPokemons = this.pokemons.length;
     this.resetPages();
@@ -75,8 +75,8 @@ export class PokemonListComponent implements OnInit {
   
   getPokemons() {
     this.dataService.getPokemonsAxios(this.totalPokemons)
-      .then(async (pokemonData: AxiosResponse<any, any>) => {
-        const results: IPokemon[] = pokemonData.data.results;
+      .then(async (pokemonData) => {
+        const results: IName[] = pokemonData.data.results;
         const promises = results.map(result=>this.getMoreData(result.name));
         const arr = await Promise.all(promises);
         this.pokemons.push(...arr);

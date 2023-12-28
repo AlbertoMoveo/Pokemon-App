@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -34,6 +34,13 @@ export class NavbarComponent {
     this.router.navigate(['/map']);
     this.location.replaceState('/map');
     this.location.go('/map');
+    window.location.reload();
+  }
+
+  navigateToPokedex(){
+    this.router.navigate(['/pokemons']);
+    this.location.replaceState('/pokemons');
+    this.location.go('/pokemons');
     window.location.reload();
   }
   
