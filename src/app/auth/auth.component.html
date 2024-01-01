@@ -1,0 +1,15 @@
+<div class="row">
+    <form>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" class="form-control" [(ngModel)]="email" [ngModelOptions]="{standalone: true}">
+      </div>
+      <div>
+        <button class="btn btn-primary" (click)="handleLogin()">Log in</button>
+      </div>
+      <div *ngIf="authService.errorMessage !== ''" class="error-message">
+        <p>{{ authService.errorMessage }}</p>
+      </div>
+    </form>
+  </div>
+  

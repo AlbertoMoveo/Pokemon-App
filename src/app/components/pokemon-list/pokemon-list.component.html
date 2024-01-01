@@ -1,0 +1,49 @@
+<!-- Filtering -->
+<div class="filter-box">
+    <input type="text" placeholder="Search by name" [(ngModel)]="filterText" (keyup.enter)="filterPokemonsByName(filterText)" />
+    <button class="search-button" (click)="filterPokemonsByName(filterText)">Search</button>
+    <label for="Types"></label>
+    <select name="pokemon-types" id="pokemon-types" (change)="filterPokemonsByType($event.target.value)" [(ngModel)]="filterType">
+        <option value="" selected>Select a type</option>
+        <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+    </select>
+    <div class="reset-button" (click)="resetFilters()">Reset Filters</div>
+    <div class="recent-searches">
+        <div *ngFor="let search of recentSearches" (click)="searchRecent(search)">
+          {{ search }}
+        </div>
+    </div>
+    <button class="reset-button" *ngIf="recentSearches.length > 0" (click)="resetSearch()">Clear search history</button>
+</div>
+
+<!-- Spinner -->
+<mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
+
+<!-- Pokemon Grid -->
+<div class="pokemon-grid" *ngIf="!isLoading">
+    <div *ngFor="let pokemon of getPagePokemons() |
+     paginate: { itemsPerPage: 10, currentPage: page, totalItems: totalPokemons }; let i = index" class="box"
+        (click)="toggleDetails(pokemon, i)" [class.clicked]="pokemon.showDetails">
+        <div>
+            <img [src]="pokemon.image" alt="Pokemon" [class.large-image]="pokemon.showDetails">
+            <h3><b>{{ pokemon.name }}</b></h3>
+            <p>
+                <b>Type:</b> {{ pokemon.type }}
+            </p>
+        </div>
+        <div *ngIf="pokemon.showDetails">
+            <p>
+                <b>Height:</b> {{ pokemon.height }}
+            </p>
+            <p>
+                <b>HP:</b> {{ pokemon.health }}
+            </p>
+            <p>
+                <b>Attack Power:</b> {{ pokemon.attack }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<pagination-controls *ngIf="!isLoading" (pageChange)="page = $event;"></pagination-controls>
