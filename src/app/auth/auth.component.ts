@@ -1,7 +1,7 @@
 // auth.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

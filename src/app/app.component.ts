@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from "./components/header/header.component";
 import { PokemonListComponent } from "./components/pokemon-list/pokemon-list.component";
 import { AuthComponent } from './auth/auth.component';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './services/auth/auth.service';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
 

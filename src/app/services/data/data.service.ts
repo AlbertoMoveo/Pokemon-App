@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { IPokemonAllResponse, IPokemonByTypeResponse } from '../../interfaces/pokemon';
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +10,15 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  getPokemonsAxios(limit: number) {
+  getPokemonsAxios(limit: number): Promise<AxiosResponse<IPokemonAllResponse>> {
     return axios.get(`https://pokeapi.co/api/v2/pokemon/?limit=${limit}/`)
   }
 
-  getAllTypesAxios() {
+  getAllTypesAxios(): Promise<AxiosResponse<IPokemonAllResponse>> {
     return axios.get("https://pokeapi.co/api/v2/type/");
   }
 
-  getPokemonsByType(type: string, limit: number) {
+  getPokemonsByType(type: string, limit: number): Promise<AxiosResponse<IPokemonByTypeResponse>> {
     return axios.get(`https://pokeapi.co/api/v2/type/${type}/?limit=${limit}`);
   }
 
